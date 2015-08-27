@@ -1,0 +1,25 @@
+{
+  "name": "FSPhotoBrowser",
+  "version": "0.1.0",
+  "summary": "A short description of FSPhotoBrowser.",
+  "description": "",
+  "homepage": "https://github.com/<GITHUB_USERNAME>/FSPhotoBrowser",
+  "license": "MIT",
+  "authors": {
+    "DevDivinity": "DevDivinity"
+  },
+  "source": {
+    "git": "https://github.com/<GITHUB_USERNAME>/FSPhotoBrowser.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "7.0"
+  },
+  "requires_arc": true,
+  "source_files": "Pod/Classes/**/*",
+  "resource_bundles": {
+    "FSPhotoBrowser": [
+      "Pod/Assets/*.png"
+    ]
+  }
+}
