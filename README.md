@@ -20,6 +20,7 @@ photo.titleFont = [UIFont fontWithName:@"Arial" size:20];
 photo.title = @"Dev Divinity";
 photo.caption = @"The London Eye is a giant Ferris ";
 [photos addObject:photo];
+```
 
 There are two main ways to presente the photoBrowser, with a fade on screen or with a zooming effect from an existing view.
 

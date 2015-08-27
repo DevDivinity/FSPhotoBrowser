@@ -1,35 +1,51 @@
 //
-//  FSPhotoBrowserTests.m
-//  FSPhotoBrowserTests
+//  PhotoBrowserDemoTests.m
+//  PhotoBrowserDemoTests
 //
-//  Created by DevDivinity on 08/22/2015.
-//  Copyright (c) 2015 DevDivinity. All rights reserved.
+//  Created by DevDivinity
+//
 //
 
-@import XCTest;
+#import <UIKit/UIKit.h>
+#import <XCTest/XCTest.h>
+#import "IDMPhotoBrowser.h"
 
-@interface Tests : XCTestCase
-
+@interface PhotoBrowserDemoTests : XCTestCase
+{
+    IDMPhoto *photo;
+    IDMPhotoBrowser *browser;
+}
 @end
 
-@implementation Tests
+@implementation PhotoBrowserDemoTests
 
-- (void)setUp
-{
+- (void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"newPhoto" ofType:@"jpg"]];
+    photo.captionFont = [UIFont fontWithName:@"verdana" size:14];
+    photo.titleFont = [UIFont fontWithName:@"Arial" size:20];
+    photo.title = @"Dev Divinity";
+    photo.caption = @"The London Eye is a giant Ferris ";
+    
+    browser = [[IDMPhotoBrowser alloc] initWithPhotos:@[photo]];
 }
 
-- (void)tearDown
-{
+- (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
-- (void)testExample
-{
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+- (void)testPhotoBrowser {
+    
+    XCTAssertNotNil(photo.captionFont);
+    XCTAssertNotNil(photo.titleFont);
+    XCTAssertNotNil(photo.title);
+    XCTAssertNotNil(photo.caption);
+    XCTAssertEqualObjects([browser photoAtIndex:0], photo);
+    
+    // This is an example of a functional test case.
+    XCTAssert(YES, @"Pass");
 }
 
 @end
-
