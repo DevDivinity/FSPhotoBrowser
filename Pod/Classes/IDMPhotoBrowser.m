@@ -318,7 +318,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     self.view.opaque = YES;
     
-    self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
+    self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:newAlpha];
     
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
@@ -393,10 +393,38 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     return image;
 }
 
-- (void)performPresentAnimation {
-    self.view.alpha = 0.0f;
-    _pagingScrollView.alpha = 0.0f;
+-(void) setAlphaForCaptionView:(CGFloat)alpha {
     
+    NSMutableSet *captionViews = [[NSMutableSet alloc] initWithCapacity:_visiblePages.count];
+    for (IDMZoomingScrollView *page in _visiblePages) {
+        if (page.captionView) [captionViews addObject:page.captionView];
+    }
+    
+    for (UIView *v in captionViews)
+        v.alpha = alpha;
+    
+}
+
+- (void)performPresentAnimation {
+    
+    BOOL ANIMATE_TOP_BOTTOM_VIEWS = NO;
+
+    self.view.alpha = 1.0f;
+
+    IDMZoomingScrollView* scrollView = [self pageDisplayedAtIndex:0];
+    scrollView.photoImageView.alpha = 0.0f;
+    
+    if(ANIMATE_TOP_BOTTOM_VIEWS) {
+        _pagingScrollView.alpha = 1.0f;
+        _doneButtonContainer.alpha = 0.0;
+        
+        [self setAlphaForCaptionView:0.0];
+        
+    }
+    else {
+        _pagingScrollView.alpha = 1.0f;
+    }
+
     UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
     imageFromView = [self rotateImageToCurrentOrientation:imageFromView];
     
@@ -408,28 +436,44 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
     fadeView.backgroundColor = [UIColor clearColor];
-    [_applicationWindow addSubview:fadeView];
+//    [_applicationWindow addSubview:fadeView];
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     resizableImageView.frame = _senderViewOriginalFrame;
     resizableImageView.clipsToBounds = YES;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
-    [_applicationWindow addSubview:resizableImageView];
+    
+    if(ANIMATE_TOP_BOTTOM_VIEWS)
+        [scrollView addSubview:resizableImageView];
+    else
+        [scrollView addSubview:resizableImageView];
+
     _senderViewForAnimation.hidden = YES;
     
     void (^completion)() = ^() {
         self.view.alpha = 1.0f;
-        _pagingScrollView.alpha = 1.0f;
+        scrollView.photoImageView.alpha = 1.0f;
+        
+        if(ANIMATE_TOP_BOTTOM_VIEWS) {
+            [UIView animateWithDuration:0.3 animations:^{
+                _pagingScrollView.alpha = 1.0f;
+                _doneButtonContainer.alpha = 1.0;
+                
+                [self setAlphaForCaptionView:1.0];
+                
+            }];
+        }
+        
         resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
         [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
 
     };
     
-    [UIView animateWithDuration:_animationDuration animations:^{
-        fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
-    } completion:nil];
+//    [UIView animateWithDuration:_animationDuration animations:^{
+//        fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
+//    } completion:nil];
     
     float scaleFactor = (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
     CGRect finalImageViewFrame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
@@ -442,7 +486,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     else
     {
-        [UIView animateWithDuration:_animationDuration animations:^{
+        [UIView animateWithDuration:5 animations:^{
             resizableImageView.layer.frame = finalImageViewFrame;
         } completion:^(BOOL finished) {
             completion();
@@ -591,7 +635,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	[self.view addSubview:_pagingScrollView];
     
     // Transition animation
-    [self performPresentAnimation];
+//    [self performPresentAnimation]; //AD
     
     UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
     
@@ -627,8 +671,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 //        [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
 //        _doneButton.layer.cornerRadius = 3.0f;
 //        _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor; //AD
-        _doneButton.layer.borderColor = [UIColor whiteColor].CGColor;
-        _doneButton.layer.borderWidth = 1.0f;
+
+        _doneButton.layer.borderColor = [self colorWithRGB: 0xd6d5cb].CGColor;
+        _doneButton.layer.borderWidth = 1;
+        _doneButton.layer.cornerRadius = 2;
   
     }
     else {
@@ -691,8 +737,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_panGesture setMinimumNumberOfTouches:1];
     [_panGesture setMaximumNumberOfTouches:1];
     
+    
     // Update
-    //[self reloadData];
+    [self reloadData]; //AD ADD
+    
+    [self performPresentAnimation]; //AD ADD
     
 	// Super
     [super viewDidLoad];
@@ -700,7 +749,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (void)viewWillAppear:(BOOL)animated {
     // Update
-    [self reloadData];
+//    [self reloadData]; //AD
     
     // Super
 	[super viewWillAppear:animated];
@@ -900,7 +949,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     } else {
         id <IDMPhoto> photo = [self photoAtIndex:index];
         if ([photo respondsToSelector:@selector(caption)]) {
-            if ([photo caption]) captionView = [[IDMFSCaptionView alloc] initWithPhoto:photo];
+            /*if ([photo caption])*/ //AD
+                captionView = [[IDMFSCaptionView alloc] initWithPhoto:photo];
         }
     }
     captionView.alpha = [self areControlsHidden] ? 0 : 1; // Initial alpha
@@ -1420,5 +1470,29 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     return NO;
 }
+
+- (UIColor *) colorWithRGBA: (NSUInteger)rgbaColorValue{
+    
+    unsigned int red, green, blue, alpha;
+    
+    alpha = (rgbaColorValue & 0xFF);
+    blue = (rgbaColorValue & 0xFFFF) >> 8;
+    green = (rgbaColorValue & 0xFFFFFF) >> 16;
+    red = (rgbaColorValue & 0xFFFFFFFF) >> 24;
+    
+    return [UIColor colorWithRed:((float) red / 255.0f)
+                           green:((float) green / 255.0f)
+                            blue:((float) blue / 255.0f)
+                           alpha:alpha/255.0f];
+    
+}
+
+
+- (UIColor *) colorWithRGB: (NSUInteger)rgbColorValue
+{
+    // color is shifted and added full opacity
+    return [self colorWithRGBA:((rgbColorValue << 8) + 0x000000FF)];
+}
+
 
 @end

@@ -10,7 +10,9 @@
 #import "TTTAttributedLabel.h"
 
 static const CGFloat CAPTION_PADDING = 16;
-static const NSString* ELLIPSES = @"...";
+static const CGFloat INTER_CAPTION_PADDING = 1;
+
+static const NSString* ELLIPSES = @"... ";
 static const NSString* TRUNCATING_TOKEN = @"More";
 static const CGFloat FADE_ANIMATION_DURATION = 0.3;
 static const NSUInteger NO_LINES_FOR_UNEXPANDED_TITLE = 1;
@@ -108,31 +110,6 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
         return titlesLines + captionLines + 1;
     else
         return titlesLines + captionLines;
-    
-/*
-    int noOfLines = 0;
-    
-    if(!_isCaptionExpanded) {
-    
-        if ([[self getPhoto] respondsToSelector:@selector(title)]) {
-            
-            if([self getPhoto].title.length > 0)
-                noOfLines+= NO_LINES_FOR_UNEXPANDED_TITLE;
-        }
-
-        if ([[self getPhoto] respondsToSelector:@selector(caption)]) {
-            if([self getPhoto].caption.length > 0)
-            {
-                if(noOfLines)
-                    noOfLines++;
-                noOfLines+= NO_LINES_FOR_UNEXPANDED_CAPTION;
-            }
-        }
-    }
-
-    return noOfLines;*/
-    
-    
 }
 
 -(void) setCaptionStateExpanded:(BOOL)expanded {
@@ -203,7 +180,7 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
     [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
     
     if([_titleLabel.text length] > 0) {
-        scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_titleLabel]-captionPadding-[_captionLabel]" options:0 metrics:@{@"captionPadding":@(CAPTION_PADDING)} views:views];
+        scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_titleLabel]-captionPadding-[_captionLabel]" options:0 metrics:@{@"captionPadding":@(INTER_CAPTION_PADDING)} views:views];
         [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
     }
     else {
@@ -214,11 +191,6 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
     captionWidthConstraint = [NSLayoutConstraint constraintWithItem:_captionLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:_captionLabelScrollView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:-CAPTION_PADDING*2];
     [_captionLabelScrollView addConstraint:captionWidthConstraint];
     
-//    NSLayoutConstraint* captionHeightConstraint = [NSLayoutConstraint constraintWithItem:_captionLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:_captionLabelScrollView attribute:NSLayoutAttributeHeight multiplier:1.0 constant:-CAPTION_PADDING*2];
-//    [_captionLabelScrollView addConstraint:captionHeightConstraint];
-    
-//    scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_captionLabel]|" options:0 metrics:nil views:views];
-//    [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
     
     NSArray *scrollViewConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_captionLabelScrollView]|" options:0 metrics:nil views:views];
     [self addConstraints:scrollViewConstraints];
@@ -339,12 +311,12 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
         
         if(titleRectUnexpanded.size.height + captionRectUnexpanded.size.height < titleRect.size.height + captionRect.size.height) {
             
-        return CGSizeMake(size.width, titleRectUnexpanded.size.height + captionRectUnexpanded.size.height + CAPTION_PADDING*2 + ([_titleLabel.text length]>0?CAPTION_PADDING:0));
+        return CGSizeMake(size.width, titleRectUnexpanded.size.height + captionRectUnexpanded.size.height + CAPTION_PADDING + INTER_CAPTION_PADDING + ([_titleLabel.text length]>0?CAPTION_PADDING:0));
         }
 
     }
     
-    return CGSizeMake(size.width, MIN(titleRect.size.height + captionRect.size.height + CAPTION_PADDING*2 + ([_titleLabel.text length]>0?CAPTION_PADDING:0), maxHeight));
+    return CGSizeMake(size.width, MIN(titleRect.size.height + captionRect.size.height + CAPTION_PADDING + INTER_CAPTION_PADDING + ([_titleLabel.text length]>0?CAPTION_PADDING:0), maxHeight));
 }
 
 

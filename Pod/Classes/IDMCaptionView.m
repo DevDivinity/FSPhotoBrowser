@@ -37,10 +37,36 @@ static const CGFloat labelPadding = 10;
         
 //        [self setBackground];
         
+        [self replaceTitleAsCaptionIfNeeded];
+        
         [self setupCaption];
     }
     
     return self;
+}
+
+-(void) replaceTitleAsCaptionIfNeeded {
+    NSString* captionString = nil;
+    NSString* titleString = nil;
+    
+    if ([[self getPhoto] respondsToSelector:@selector(caption)])
+        captionString = [self getPhoto].caption;
+    
+    if ([[self getPhoto] respondsToSelector:@selector(title)])
+        titleString = [self getPhoto].title;
+    
+    id photoRef = [self getPhoto];
+    
+    if(captionString.length == 0) {
+        
+        if ([photoRef respondsToSelector:@selector(setCaption:)]) {
+            
+            [photoRef setValue:titleString forKey:@"caption"];
+            if ([photoRef respondsToSelector:@selector(setTitle:)])
+                [photoRef setValue:nil forKey:@"title"];
+        }
+    }
+    
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
