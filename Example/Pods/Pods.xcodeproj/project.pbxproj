@@ -31,6 +31,8 @@
 		E22CB3201B887E0500658EED /* IDMTapDetectingView.m in Sources */ = {isa = PBXBuildFile; fileRef = E22CB30E1B887E0500658EED /* IDMTapDetectingView.m */; };
 		E22CB3211B887E0500658EED /* IDMZoomingScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = E22CB30F1B887E0500658EED /* IDMZoomingScrollView.h */; };
 		E22CB3221B887E0500658EED /* IDMZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E22CB3101B887E0500658EED /* IDMZoomingScrollView.m */; };
+		E295EF4B1BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = E295EF491BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.h */; };
+		E295EF4C1BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = E295EF4A1BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.m */; };
 		E7CE89E8CAE9BBB2EBC2116EB9A6ECE0 /* Pods-FSPhotoBrowser_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 51FAE4F94967A03893EDDF41557607EE /* Pods-FSPhotoBrowser_Tests-dummy.m */; };
 		ED0C640E5F35AD8E1D65811EE34BF57B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D3C7EC843DC45B637A59BBEE00286F8 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -106,6 +108,8 @@
 		E22CB30E1B887E0500658EED /* IDMTapDetectingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDMTapDetectingView.m; sourceTree = "<group>"; };
 		E22CB30F1B887E0500658EED /* IDMZoomingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDMZoomingScrollView.h; sourceTree = "<group>"; };
 		E22CB3101B887E0500658EED /* IDMZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDMZoomingScrollView.m; sourceTree = "<group>"; };
+		E295EF491BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPhotoBrowser_TTTAttributedLabel.h; sourceTree = "<group>"; };
+		E295EF4A1BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPhotoBrowser_TTTAttributedLabel.m; sourceTree = "<group>"; };
 		E683363740F686FEC6EE74BDCF0D08BF /* Pods-FSPhotoBrowser_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-FSPhotoBrowser_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		E7F3D69A5D83B7509BC575BDE58B2A2F /* Pods-FSPhotoBrowser_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FSPhotoBrowser_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		EEE901170AAC0977CA38B546B7CCDA07 /* Pods-FSPhotoBrowser_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-FSPhotoBrowser_Tests-umbrella.h"; sourceTree = "<group>"; };
@@ -189,6 +193,8 @@
 		5C815AA8232FDD32887827A0BA1BCD76 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				E295EF491BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.h */,
+				E295EF4A1BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.m */,
 				E22CB2FF1B887E0500658EED /* IDMCaptionView.h */,
 				E22CB3001B887E0500658EED /* IDMCaptionView.m */,
 				E22CB3011B887E0500658EED /* IDMFSCaptionView.h */,
@@ -310,6 +316,7 @@
 				E22CB3131B887E0500658EED /* IDMFSCaptionView.h in Headers */,
 				E22CB3151B887E0500658EED /* IDMPBConstants.h in Headers */,
 				E22CB31A1B887E0500658EED /* IDMPhotoBrowser.h in Headers */,
+				E295EF4B1BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,6 +475,7 @@
 				E22CB31B1B887E0500658EED /* IDMPhotoBrowser.m in Sources */,
 				E22CB3141B887E0500658EED /* IDMFSCaptionView.m in Sources */,
 				E22CB3181B887E0500658EED /* IDMPhoto.m in Sources */,
+				E295EF4C1BA024A3004C3D68 /* FSPhotoBrowser_TTTAttributedLabel.m in Sources */,
 				E22CB3121B887E0500658EED /* IDMCaptionView.m in Sources */,
 				5ECF71C6ECC74D45E43E00F35321A279 /* FSPhotoBrowser-dummy.m in Sources */,
 				E22CB31E1B887E0500658EED /* IDMTapDetectingImageView.m in Sources */,

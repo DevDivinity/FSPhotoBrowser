@@ -7,7 +7,7 @@
 //
 
 #import "IDMFSCaptionView.h"
-#import "TTTAttributedLabel.h"
+#import "FSPhotoBrowser_TTTAttributedLabel.h"
 
 static const CGFloat CAPTION_PADDING = 16;
 static const CGFloat INTER_CAPTION_PADDING = 1;
@@ -19,8 +19,8 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_TITLE = 1;
 static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
 
 @interface IDMFSCaptionView()<UITextViewDelegate> {
-    TTTAttributedLabel *_captionLabel;
-    TTTAttributedLabel *_titleLabel;
+    FSPhotoBrowser_TTTAttributedLabel *_captionLabel;
+    FSPhotoBrowser_TTTAttributedLabel *_titleLabel;
     BOOL _isCaptionExpanded;
     UIView* _fadingView;
     UIScrollView* _captionLabelScrollView;
@@ -40,7 +40,7 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
     _captionLabelScrollView.backgroundColor = [UIColor blackColor];
     [self addSubview:_captionLabelScrollView];
     
-    _captionLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0,
+    _captionLabel = [[FSPhotoBrowser_TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0,
                                                                          self.bounds.size.width,
                                                                          self.bounds.size.height)];
     _captionLabel.numberOfLines = [self getNumberofCaptionLines];
@@ -50,7 +50,7 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
     
     _captionLabel.attributedText = [self getCaptionAttributedStringWithText:nil];
     
-    _titleLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0,
+    _titleLabel = [[FSPhotoBrowser_TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0,
                                                                          self.bounds.size.width,
                                                                          self.bounds.size.height)];
     _titleLabel.numberOfLines = 1;

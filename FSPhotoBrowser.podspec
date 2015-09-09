@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "FSPhotoBrowser"
-  s.version          = "0.1.12"
+  s.version          = "0.1.13"
   s.summary          = "Facebook style photo browser"
 
 # This description is used to generate tags and improve search results.
@@ -39,5 +39,5 @@ s.framework     =  'MessageUI', 'QuartzCore', 'SystemConfiguration', 'MobileCore
 s.dependency       'AFNetworking'
 s.dependency       'DACircularProgress'
 s.dependency       'pop'
-s.dependency       'TTTAttributedLabel'
+#s.dependency       'TTTAttributedLabel'
 end
