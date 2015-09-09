@@ -28,7 +28,7 @@
 
 #define kTTTLineBreakWordWrapTextWidthScalingFactor (M_PI / M_E)
 
-static CGFloat const TTTFLOAT_MAX = 100000;
+static CGFloat const FSPhotoBrowser_TTTFLOAT_MAX = 100000;
 
 NSString * const FSPhotoBrowser_kTTTStrikeOutAttributeName = @"TTTStrikeOutAttribute";
 NSString * const FSPhotoBrowser_kTTTBackgroundFillColorAttributeName = @"TTTBackgroundFillColor";
@@ -38,41 +38,41 @@ NSString * const FSPhotoBrowser_kTTTBackgroundLineWidthAttributeName = @"TTTBack
 NSString * const FSPhotoBrowser_kTTTBackgroundCornerRadiusAttributeName = @"TTTBackgroundCornerRadius";
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
-const NSTextAlignment TTTTextAlignmentLeft = NSTextAlignmentLeft;
-const NSTextAlignment TTTTextAlignmentCenter = NSTextAlignmentCenter;
-const NSTextAlignment TTTTextAlignmentRight = NSTextAlignmentRight;
-const NSTextAlignment TTTTextAlignmentJustified = NSTextAlignmentJustified;
-const NSTextAlignment TTTTextAlignmentNatural = NSTextAlignmentNatural;
+const NSTextAlignment FSPhotoBrowser_TTTTextAlignmentLeft = NSTextAlignmentLeft;
+const NSTextAlignment FSPhotoBrowser_TTTTextAlignmentCenter = NSTextAlignmentCenter;
+const NSTextAlignment FSPhotoBrowser_TTTTextAlignmentRight = NSTextAlignmentRight;
+const NSTextAlignment FSPhotoBrowser_TTTTextAlignmentJustified = NSTextAlignmentJustified;
+const NSTextAlignment FSPhotoBrowser_TTTTextAlignmentNatural = NSTextAlignmentNatural;
 
-const NSLineBreakMode TTTLineBreakByWordWrapping = NSLineBreakByWordWrapping;
-const NSLineBreakMode TTTLineBreakByCharWrapping = NSLineBreakByCharWrapping;
-const NSLineBreakMode TTTLineBreakByClipping = NSLineBreakByClipping;
-const NSLineBreakMode TTTLineBreakByTruncatingHead = NSLineBreakByTruncatingHead;
-const NSLineBreakMode TTTLineBreakByTruncatingMiddle = NSLineBreakByTruncatingMiddle;
-const NSLineBreakMode TTTLineBreakByTruncatingTail = NSLineBreakByTruncatingTail;
+const NSLineBreakMode FSPhotoBrowser_TTTLineBreakByWordWrapping = NSLineBreakByWordWrapping;
+const NSLineBreakMode FSPhotoBrowser_TTTLineBreakByCharWrapping = NSLineBreakByCharWrapping;
+const NSLineBreakMode FSPhotoBrowser_TTTLineBreakByClipping = NSLineBreakByClipping;
+const NSLineBreakMode FSPhotoBrowser_TTTLineBreakByTruncatingHead = NSLineBreakByTruncatingHead;
+const NSLineBreakMode FSPhotoBrowser_TTTLineBreakByTruncatingMiddle = NSLineBreakByTruncatingMiddle;
+const NSLineBreakMode FSPhotoBrowser_TTTLineBreakByTruncatingTail = NSLineBreakByTruncatingTail;
 
-typedef NSTextAlignment TTTTextAlignment;
-typedef NSLineBreakMode TTTLineBreakMode;
+typedef NSTextAlignment FSPhotoBrowser_TTTTextAlignment;
+typedef NSLineBreakMode FSPhotoBrowser_TTTLineBreakMode;
 #else
-const UITextAlignment TTTTextAlignmentLeft = NSTextAlignmentLeft;
-const UITextAlignment TTTTextAlignmentCenter = NSTextAlignmentCenter;
-const UITextAlignment TTTTextAlignmentRight = NSTextAlignmentRight;
-const UITextAlignment TTTTextAlignmentJustified = NSTextAlignmentJustified;
-const UITextAlignment TTTTextAlignmentNatural = NSTextAlignmentNatural;
+const UITextAlignment FSPhotoBrowser_TTTTextAlignmentLeft = NSTextAlignmentLeft;
+const UITextAlignment FSPhotoBrowser_TTTTextAlignmentCenter = NSTextAlignmentCenter;
+const UITextAlignment FSPhotoBrowser_TTTTextAlignmentRight = NSTextAlignmentRight;
+const UITextAlignment FSPhotoBrowser_TTTTextAlignmentJustified = NSTextAlignmentJustified;
+const UITextAlignment FSPhotoBrowser_TTTTextAlignmentNatural = NSTextAlignmentNatural;
 
-const UITextAlignment TTTLineBreakByWordWrapping = NSLineBreakByWordWrapping;
-const UITextAlignment TTTLineBreakByCharWrapping = NSLineBreakByCharWrapping;
-const UITextAlignment TTTLineBreakByClipping = NSLineBreakByClipping;
-const UITextAlignment TTTLineBreakByTruncatingHead = NSLineBreakByTruncatingHead;
-const UITextAlignment TTTLineBreakByTruncatingMiddle = NSLineBreakByTruncatingMiddle;
-const UITextAlignment TTTLineBreakByTruncatingTail = NSLineBreakByTruncatingTail;
+const UITextAlignment FSPhotoBrowser_TTTLineBreakByWordWrapping = NSLineBreakByWordWrapping;
+const UITextAlignment FSPhotoBrowser_TTTLineBreakByCharWrapping = NSLineBreakByCharWrapping;
+const UITextAlignment FSPhotoBrowser_TTTLineBreakByClipping = NSLineBreakByClipping;
+const UITextAlignment FSPhotoBrowser_TTTLineBreakByTruncatingHead = NSLineBreakByTruncatingHead;
+const UITextAlignment FSPhotoBrowser_TTTLineBreakByTruncatingMiddle = NSLineBreakByTruncatingMiddle;
+const UITextAlignment FSPhotoBrowser_TTTLineBreakByTruncatingTail = NSLineBreakByTruncatingTail;
 
-typedef UITextAlignment TTTTextAlignment;
-typedef UILineBreakMode TTTLineBreakMode;
+typedef UITextAlignment FSPhotoBrowser_TTTTextAlignment;
+typedef UILineBreakMode FSPhotoBrowser_TTTLineBreakMode;
 #endif
 
 
-static inline CTTextAlignment CTTextAlignmentFromTTTTextAlignment(TTTTextAlignment alignment) {
+static inline CTTextAlignment CTTextAlignmentFromTTTTextAlignment(FSPhotoBrowser_TTTTextAlignment alignment) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     switch (alignment) {
 		case NSTextAlignmentLeft: return kCTLeftTextAlignment;
@@ -90,7 +90,7 @@ static inline CTTextAlignment CTTextAlignmentFromTTTTextAlignment(TTTTextAlignme
 #endif
 }
 
-static inline CTLineBreakMode CTLineBreakModeFromTTTLineBreakMode(TTTLineBreakMode lineBreakMode) {
+static inline CTLineBreakMode CTLineBreakModeFromTTTLineBreakMode(FSPhotoBrowser_TTTLineBreakMode lineBreakMode) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 	switch (lineBreakMode) {
 		case NSLineBreakByWordWrapping: return kCTLineBreakByWordWrapping;
@@ -157,11 +157,11 @@ static inline CGFLOAT_TYPE CGFloat_sqrt(CGFLOAT_TYPE cgfloat) {
 
 static inline CGFloat TTTFlushFactorForTextAlignment(NSTextAlignment textAlignment) {
     switch (textAlignment) {
-        case TTTTextAlignmentCenter:
+        case FSPhotoBrowser_TTTTextAlignmentCenter:
             return 0.5f;
-        case TTTTextAlignmentRight:
+        case FSPhotoBrowser_TTTTextAlignmentRight:
             return 1.0f;
-        case TTTTextAlignmentLeft:
+        case FSPhotoBrowser_TTTTextAlignmentLeft:
         default:
             return 0.0f;
     }
@@ -277,15 +277,15 @@ static inline NSAttributedString * NSAttributedStringBySettingColorFromContext(N
 
 static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstraints(CTFramesetterRef framesetter, NSAttributedString *attributedString, CGSize size, NSUInteger numberOfLines) {
     CFRange rangeToSize = CFRangeMake(0, (CFIndex)[attributedString length]);
-    CGSize constraints = CGSizeMake(size.width, TTTFLOAT_MAX);
+    CGSize constraints = CGSizeMake(size.width, FSPhotoBrowser_TTTFLOAT_MAX);
 
     if (numberOfLines == 1) {
         // If there is one line, the size that fits is the full width of the line
-        constraints = CGSizeMake(TTTFLOAT_MAX, TTTFLOAT_MAX);
+        constraints = CGSizeMake(FSPhotoBrowser_TTTFLOAT_MAX, FSPhotoBrowser_TTTFLOAT_MAX);
     } else if (numberOfLines > 0) {
         // If the line count of the label more than 1, limit the range to size to the number of lines that have been set
         CGMutablePathRef path = CGPathCreateMutable();
-        CGPathAddRect(path, NULL, CGRectMake(0.0f, 0.0f, constraints.width, TTTFLOAT_MAX));
+        CGPathAddRect(path, NULL, CGRectMake(0.0f, 0.0f, constraints.width, FSPhotoBrowser_TTTFLOAT_MAX));
         CTFrameRef frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, 0), path, NULL);
         CFArrayRef lines = CTFrameGetLines(frame);
 
@@ -828,7 +828,7 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
 
     CFArrayRef lines = CTFrameGetLines(frame);
     NSInteger numberOfLines = self.numberOfLines > 0 ? MIN(self.numberOfLines, CFArrayGetCount(lines)) : CFArrayGetCount(lines);
-    BOOL truncateLastLine = (self.lineBreakMode == TTTLineBreakByTruncatingHead || self.lineBreakMode == TTTLineBreakByTruncatingMiddle || self.lineBreakMode == TTTLineBreakByTruncatingTail);
+    BOOL truncateLastLine = (self.lineBreakMode == FSPhotoBrowser_TTTLineBreakByTruncatingHead || self.lineBreakMode == FSPhotoBrowser_TTTLineBreakByTruncatingMiddle || self.lineBreakMode == FSPhotoBrowser_TTTLineBreakByTruncatingTail);
 
     CGPoint lineOrigins[numberOfLines];
     CTFrameGetLineOrigins(frame, CFRangeMake(0, numberOfLines), lineOrigins);
@@ -852,22 +852,22 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
                 // Get correct truncationType and attribute position
                 CTLineTruncationType truncationType;
                 CFIndex truncationAttributePosition = lastLineRange.location;
-                TTTLineBreakMode lineBreakMode = self.lineBreakMode;
+                FSPhotoBrowser_TTTLineBreakMode lineBreakMode = self.lineBreakMode;
 
                 // Multiple lines, only use UILineBreakModeTailTruncation
                 if (numberOfLines != 1) {
-                    lineBreakMode = TTTLineBreakByTruncatingTail;
+                    lineBreakMode = FSPhotoBrowser_TTTLineBreakByTruncatingTail;
                 }
 
                 switch (lineBreakMode) {
-                    case TTTLineBreakByTruncatingHead:
+                    case FSPhotoBrowser_TTTLineBreakByTruncatingHead:
                         truncationType = kCTLineTruncationStart;
                         break;
-                    case TTTLineBreakByTruncatingMiddle:
+                    case FSPhotoBrowser_TTTLineBreakByTruncatingMiddle:
                         truncationType = kCTLineTruncationMiddle;
                         truncationAttributePosition += (lastLineRange.length / 2);
                         break;
-                    case TTTLineBreakByTruncatingTail:
+                    case FSPhotoBrowser_TTTLineBreakByTruncatingTail:
                     default:
                         truncationType = kCTLineTruncationEnd;
                         truncationAttributePosition += (lastLineRange.length - 1);
@@ -1278,11 +1278,11 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
     // Adjust the font size to fit width, if necessarry
     if (self.adjustsFontSizeToFitWidth && self.numberOfLines > 0) {
         // Use infinite width to find the max width, which will be compared to availableWidth if needed.
-        CGSize maxSize = (self.numberOfLines > 1) ? CGSizeMake(TTTFLOAT_MAX, TTTFLOAT_MAX) : CGSizeZero;
+        CGSize maxSize = (self.numberOfLines > 1) ? CGSizeMake(FSPhotoBrowser_TTTFLOAT_MAX, FSPhotoBrowser_TTTFLOAT_MAX) : CGSizeZero;
 
         CGFloat textWidth = [self sizeThatFits:maxSize].width;
         CGFloat availableWidth = self.frame.size.width * self.numberOfLines;
-        if (self.numberOfLines > 1 && self.lineBreakMode == TTTLineBreakByWordWrapping) {
+        if (self.numberOfLines > 1 && self.lineBreakMode == FSPhotoBrowser_TTTLineBreakByWordWrapping) {
             textWidth *= kTTTLineBreakWordWrapTextWidthScalingFactor;
         }
 
