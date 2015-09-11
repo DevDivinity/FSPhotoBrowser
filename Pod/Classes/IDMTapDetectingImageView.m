@@ -15,6 +15,7 @@
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		self.userInteractionEnabled = YES;
+        self.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return self;
 }
@@ -22,6 +23,7 @@
 - (id)initWithImage:(UIImage *)image {
 	if ((self = [super initWithImage:image])) {
 		self.userInteractionEnabled = YES;
+        self.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return self;
 }
@@ -29,6 +31,7 @@
 - (id)initWithImage:(UIImage *)image highlightedImage:(UIImage *)highlightedImage {
 	if ((self = [super initWithImage:image highlightedImage:highlightedImage])) {
 		self.userInteractionEnabled = YES;
+        self.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return self;
 }

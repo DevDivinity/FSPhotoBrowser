@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "FSPhotoBrowser"
-  s.version          = "0.1.14"
+  s.version          = "0.1.15"
   s.summary          = "Facebook style photo browser"
 
 # This description is used to generate tags and improve search results.

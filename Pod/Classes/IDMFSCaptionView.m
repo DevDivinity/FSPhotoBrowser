@@ -311,12 +311,12 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
         
         if(titleRectUnexpanded.size.height + captionRectUnexpanded.size.height < titleRect.size.height + captionRect.size.height) {
             
-        return CGSizeMake(size.width, titleRectUnexpanded.size.height + captionRectUnexpanded.size.height + CAPTION_PADDING + INTER_CAPTION_PADDING + ([_titleLabel.text length]>0?CAPTION_PADDING:0));
+        return CGSizeMake(size.width, titleRectUnexpanded.size.height + captionRectUnexpanded.size.height + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0));
         }
 
     }
     
-    return CGSizeMake(size.width, MIN(titleRect.size.height + captionRect.size.height + CAPTION_PADDING + INTER_CAPTION_PADDING + ([_titleLabel.text length]>0?CAPTION_PADDING:0), maxHeight));
+    return CGSizeMake(size.width, MIN(titleRect.size.height + captionRect.size.height + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0), maxHeight));
 }
 
 
