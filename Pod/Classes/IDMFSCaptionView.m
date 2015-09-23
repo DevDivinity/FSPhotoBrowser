@@ -289,7 +289,7 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
         screenHeight = screenBound.size.width;
     }
     
-    CGFloat maxHeight = screenHeight;
+    CGFloat maxHeight = FLT_MAX;
     CGFloat width = size.width - CAPTION_PADDING*2;
     
     CGRect titleRect = CGRectZero;
@@ -301,6 +301,8 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
     CGRect captionRect = [_captionLabel.attributedText boundingRectWithSize:(CGSize){width, maxHeight}
                                                                         options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
                                                                         context:nil];
+    
+    CGSize newsize = CGSizeZero;
     if(!_isCaptionExpanded) {
         
         CGRect titleRectUnexpanded = CGRectZero;
@@ -311,12 +313,19 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
         
         if(titleRectUnexpanded.size.height + captionRectUnexpanded.size.height < titleRect.size.height + captionRect.size.height) {
             
-        return CGSizeMake(size.width, titleRectUnexpanded.size.height + captionRectUnexpanded.size.height + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0));
+            newsize =  CGSizeMake(size.width, ceil(titleRectUnexpanded.size.height) + ceil(captionRectUnexpanded.size.height) + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0));
+            _captionLabelScrollView.contentSize = newsize;
+            
+            return newsize;
         }
 
     }
+
+    newsize = CGSizeMake(size.width, MIN(ceil(titleRect.size.height) + ceil(captionRect.size.height) + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0), screenHeight));
     
-    return CGSizeMake(size.width, MIN(titleRect.size.height + captionRect.size.height + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0), maxHeight));
+    _captionLabelScrollView.contentSize = CGSizeMake(newsize.width, _captionLabel.frame.origin.y+_captionLabel.frame.size.height + (newsize.height >= screenHeight ? CAPTION_PADDING: 0));
+    
+    return newsize;
 }
 
 
