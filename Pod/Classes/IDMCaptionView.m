@@ -15,13 +15,14 @@ static const CGFloat labelPadding = 10;
 // Private
 @interface IDMCaptionView () {
     id<IDMPhoto> _photo;
-    UILabel *_label;    
+    UILabel *_label;
+    UIViewController* _parentController;
 }
 @end
 
 @implementation IDMCaptionView
 
-- (id)initWithPhoto:(id<IDMPhoto>)photo {
+- (id)initWithPhoto:(id<IDMPhoto>)photo parentController:(UIViewController*)parentController {
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
     
@@ -33,6 +34,7 @@ static const CGFloat labelPadding = 10;
     self = [super initWithFrame:CGRectMake(0, 0, screenWidth, 44)]; // Random initial frame
     if (self) {
         _photo = photo;
+        _parentController = parentController;
         self.opaque = NO;
         
 //        [self setBackground];
@@ -129,6 +131,10 @@ static const CGFloat labelPadding = 10;
 -(id<IDMPhoto>) getPhoto
 {
     return _photo;
+}
+
+-(UIViewController*) parentController {
+    return _parentController;
 }
 
 @end

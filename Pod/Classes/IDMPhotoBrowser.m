@@ -953,7 +953,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         id <IDMPhoto> photo = [self photoAtIndex:index];
         if ([photo respondsToSelector:@selector(caption)]) {
             /*if ([photo caption])*/ //AD
-            captionView = [[IDMFSCaptionView alloc] initWithPhoto:photo];
+            captionView = [[IDMFSCaptionView alloc] initWithPhoto:photo parentController:self];
         }
     }
     captionView.alpha = [self areControlsHidden] ? 0 : 1; // Initial alpha

@@ -12,7 +12,7 @@
 @interface IDMCaptionView : UIView
 
 // Init
-- (id)initWithPhoto:(id<IDMPhoto>)photo;
+- (id)initWithPhoto:(id<IDMPhoto>)photo parentController:(UIViewController*)parentController;
 
 // To create your own custom caption view, subclass this view
 // and override the following two methods (as well as any other
@@ -31,5 +31,6 @@
 - (CGSize)sizeThatFits:(CGSize)size;
 
 -(id<IDMPhoto>) getPhoto;
+-(UIViewController*) parentController;
 
 @end

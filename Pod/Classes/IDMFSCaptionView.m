@@ -139,6 +139,9 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
         
         [self setTruncatingTokenForCaption:TRUNCATING_TOKEN];
     }
+    
+    if(SYSTEM_VERSION_LESS_THAN(@"8.0"))
+       [[self parentController].view setNeedsLayout];
 }
 
 -(void) setupFadingView {
@@ -293,23 +296,56 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
     CGFloat width = size.width - CAPTION_PADDING*2;
     
     CGRect titleRect = CGRectZero;
+    CGSize titleSize = CGSizeZero;
     if([_titleLabel.text length] > 0)
-        titleRect = [[self getTitleAttributedStringWithText:[self getStringWithRepeatingString:@" " repeatCount:1]] boundingRectWithSize:(CGSize){width, maxHeight}
-                                                                    options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
-                                                                    context:nil];
+    {
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
+            titleRect = [[self getTitleAttributedStringWithText:[self getStringWithRepeatingString:@" " repeatCount:1]] boundingRectWithSize:(CGSize){width, maxHeight}
+                                    options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
+                                        context:nil];
+        else {
+            titleSize = [_titleLabel sizeThatFits:CGSizeMake(width, maxHeight)];
+            titleRect.size = titleSize;
+        }
+    }
 
-    CGRect captionRect = [_captionLabel.attributedText boundingRectWithSize:(CGSize){width, maxHeight}
+    CGRect captionRect = CGRectZero;
+    CGSize captionSize = CGSizeZero;
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
+        captionRect = [_captionLabel.attributedText boundingRectWithSize:(CGSize){width, maxHeight}
                                                                         options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
                                                                         context:nil];
+    else {
+        captionSize = [_captionLabel sizeThatFits:CGSizeMake(width, maxHeight)];
+        captionRect.size = captionSize;
+    }
     
     CGSize newsize = CGSizeZero;
     if(!_isCaptionExpanded) {
         
         CGRect titleRectUnexpanded = CGRectZero;
-        if([_titleLabel.text length] > 0)
-            titleRectUnexpanded = [[self getTitleAttributedStringWithText:[self getStringWithRepeatingString:@" " repeatCount:1]] boundingRectWithSize:(CGSize){width, maxHeight} options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
+        CGSize titleSizeUnexpanded = CGSizeZero;
+
+        if([_titleLabel.text length] > 0) {
+            
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
+                titleRectUnexpanded = [[self getTitleAttributedStringWithText:[self getStringWithRepeatingString:@" " repeatCount:1]] boundingRectWithSize:(CGSize){width, maxHeight} options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
+            else {
+                titleSizeUnexpanded = [_titleLabel sizeThatFits:CGSizeMake(width, maxHeight)];
+                titleRectUnexpanded.size = titleSizeUnexpanded;
+            }
+        }
         
-        CGRect captionRectUnexpanded = [[self getCaptionAttributedStringWithText:[self getStringWithRepeatingString:@"\n" repeatCount:[self getNumberofCaptionLines]-1]] boundingRectWithSize:(CGSize){width, maxHeight} options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
+        CGRect captionRectUnexpanded = CGRectZero;
+        CGSize captionSizeUnexpanded = CGSizeZero;
+        
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
+            captionRectUnexpanded = [[self getCaptionAttributedStringWithText:[self getStringWithRepeatingString:@"\n" repeatCount:[self getNumberofCaptionLines]-1]] boundingRectWithSize:(CGSize){width, maxHeight} options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
+        else {
+            captionSizeUnexpanded = [_captionLabel sizeThatFits:CGSizeMake(width, maxHeight)];
+            captionRectUnexpanded.size = captionSizeUnexpanded;
+        }
         
         if(titleRectUnexpanded.size.height + captionRectUnexpanded.size.height < titleRect.size.height + captionRect.size.height) {
             
