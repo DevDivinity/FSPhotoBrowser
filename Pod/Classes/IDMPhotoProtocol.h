@@ -61,7 +61,11 @@
 
 - (UIFont*) titleFont;
 
+- (UIFont*) additionalTextFont;
+
 - (NSString*) title;
+
+- (NSString*) additionalText;
 
 // Return placeholder UIImage to be displayed while loading underlyingImage
 // Return nil if there is no placeholder

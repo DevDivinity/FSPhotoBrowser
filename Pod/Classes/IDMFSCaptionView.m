@@ -21,6 +21,7 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
 @interface IDMFSCaptionView()<UITextViewDelegate> {
     FSPhotoBrowser_TTTAttributedLabel *_captionLabel;
     FSPhotoBrowser_TTTAttributedLabel *_titleLabel;
+    FSPhotoBrowser_TTTAttributedLabel *_additionalTextLabel;
     BOOL _isCaptionExpanded;
     UIView* _fadingView;
     UIScrollView* _captionLabelScrollView;
@@ -39,7 +40,7 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
     _captionLabelScrollView.showsVerticalScrollIndicator = NO;
     _captionLabelScrollView.backgroundColor = [UIColor blackColor];
     [self addSubview:_captionLabelScrollView];
-    
+
     _captionLabel = [[FSPhotoBrowser_TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0,
                                                                          self.bounds.size.width,
                                                                          self.bounds.size.height)];
@@ -47,9 +48,9 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
     _captionLabel.userInteractionEnabled = YES;
     _captionLabel.textAlignment = NSTextAlignmentJustified;
     _captionLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     _captionLabel.attributedText = [self getCaptionAttributedStringWithText:nil];
-    
+
     _titleLabel = [[FSPhotoBrowser_TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0,
                                                                          self.bounds.size.width,
                                                                          self.bounds.size.height)];
@@ -57,29 +58,45 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
     _titleLabel.userInteractionEnabled = YES;
     _titleLabel.textAlignment = NSTextAlignmentJustified;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     _titleLabel.attributedText = [self getTitleAttributedStringWithText:nil];
-    
+
     [self setTruncatingTokenForCaption:TRUNCATING_TOKEN];
 
     [_captionLabelScrollView addSubview:_titleLabel];
     [_captionLabelScrollView addSubview:_captionLabel];
 
-    [self setupConstaints];
-    
+    NSAttributedString *additionalText = [self getAdditionalTextAttributedStringWithText:nil];
+
+    if (additionalText) {
+        _additionalTextLabel = [[FSPhotoBrowser_TTTAttributedLabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.bounds.size.width, self.bounds.size.height)];
+        _additionalTextLabel.numberOfLines = 1;
+        _additionalTextLabel.userInteractionEnabled = YES;
+        _additionalTextLabel.textAlignment = NSTextAlignmentJustified;
+        _additionalTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        _additionalTextLabel.attributedText = [self getAdditionalTextAttributedStringWithText:nil];
+
+        [_captionLabelScrollView addSubview:_additionalTextLabel];
+
+        UITapGestureRecognizer *additionalTextTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizeTapGesture:)];
+        [_additionalTextLabel addGestureRecognizer:additionalTextTapGesture];
+    }
+
+    [self setupConstraints];
+
     UITapGestureRecognizer *titleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizeTapGesture:)];
     [_titleLabel addGestureRecognizer:titleTapGesture];
-    
+
     UITapGestureRecognizer *captionTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizeTapGesture:)];
     [_captionLabel addGestureRecognizer:captionTapGesture];
 }
 
 -(NSUInteger) getNumberofTitleLines {
-    
+
     if(!_isCaptionExpanded) {
-        
+
         if ([[self getPhoto] respondsToSelector:@selector(title)]) {
-            
+
             if([self getPhoto].title.length > 0)
                 return NO_LINES_FOR_UNEXPANDED_TITLE;
         }
@@ -88,24 +105,24 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
 }
 
 -(NSUInteger) getNumberofCaptionLines {
-    
+
     if(!_isCaptionExpanded) {
-        
+
         if ([[self getPhoto] respondsToSelector:@selector(caption)]) {
             if([self getPhoto].caption.length > 0)
                 return NO_LINES_FOR_UNEXPANDED_CAPTION;
         }
     }
-    
+
     return 0;
-    
+
 }
 
 -(NSUInteger) getNumberOfLines {
-    
+
     NSUInteger titlesLines = [self getNumberofTitleLines];
     NSUInteger captionLines = [self getNumberofCaptionLines];
-    
+
     if(titlesLines > 0)
         return titlesLines + captionLines + 1;
     else
@@ -113,20 +130,20 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
 }
 
 -(void) setCaptionStateExpanded:(BOOL)expanded {
-    
+
     _isCaptionExpanded = expanded;
-    
+
     if(expanded) {
-        
+
         _captionLabel.numberOfLines = 0;
         _captionLabel.attributedTruncationToken = nil;
-        
+
         [self setupFadingView];
-        
+
         [UIView animateWithDuration:FADE_ANIMATION_DURATION animations:^{
             _fadingView.alpha = 0.5;
         }];
-        
+
     }
     else {
         [UIView animateWithDuration:FADE_ANIMATION_DURATION animations:^{
@@ -134,27 +151,27 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
         } completion:^(BOOL finished) {
             [self clearFadingView];
         }];
-        
+
         _captionLabel.numberOfLines = [self getNumberofCaptionLines];
-        
+
         [self setTruncatingTokenForCaption:TRUNCATING_TOKEN];
     }
-    
+
     if(SYSTEM_VERSION_LESS_THAN(@"8.0"))
        [[self parentController].view setNeedsLayout];
 }
 
 -(void) setupFadingView {
-    
+
     if(!_fadingView) {
         _fadingView = [[UIView alloc] initWithFrame:self.superview.frame];
         _fadingView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         _fadingView.userInteractionEnabled = NO;
         _fadingView.backgroundColor = [UIColor blackColor];
         _fadingView.alpha = 0;
-        
+
         [self.superview insertSubview:_fadingView belowSubview:self];
-        
+
         _fadingViewTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizeTapGesture:)];
         [self.superview addGestureRecognizer:_fadingViewTapGestureRecognizer];
     }
@@ -166,23 +183,23 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
 }
 
 
--(void) setupConstaints {
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(_captionLabelScrollView, _captionLabel, _titleLabel);
-    
+-(void) setupConstraints {
+
+    NSDictionary *views = NSDictionaryOfVariableBindings(_captionLabelScrollView, _captionLabel, _titleLabel, _additionalTextLabel);
+
     NSArray *scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-captionPadding-[_titleLabel]|" options:0 metrics:@{@"captionPadding":@(CAPTION_PADDING)} views:views];
     [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
-    
+
     scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-captionPadding-[_titleLabel]|" options:0 metrics:@{@"captionPadding":@(CAPTION_PADDING)} views:views];
     [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
-    
+
     NSLayoutConstraint* captionWidthConstraint = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:_captionLabelScrollView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:-CAPTION_PADDING*2];
     [_captionLabelScrollView addConstraint:captionWidthConstraint];
-    
+
     scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-captionPadding-[_captionLabel]|" options:0 metrics:@{@"captionPadding":@(CAPTION_PADDING)} views:views];
     [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
-    
-    if([_titleLabel.text length] > 0) {
+
+    if ([_titleLabel.text length] > 0) {
         scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_titleLabel]-captionPadding-[_captionLabel]" options:0 metrics:@{@"captionPadding":@(INTER_CAPTION_PADDING)} views:views];
         [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
     }
@@ -190,81 +207,110 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
         scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-captionPadding-[_captionLabel]" options:0 metrics:@{@"captionPadding":@(CAPTION_PADDING)} views:views];
         [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
     }
-    
+
+    if ([_additionalTextLabel.text length] > 0) {
+        scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-captionPadding-[_additionalTextLabel]|" options:0 metrics:@{@"captionPadding":@(CAPTION_PADDING)} views:views];
+        [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
+
+        scrollViewLabelConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_captionLabel]-captionPadding-[_additionalTextLabel]" options:0 metrics:@{@"captionPadding":@(INTER_CAPTION_PADDING)} views:views];
+        [_captionLabelScrollView addConstraints:scrollViewLabelConstraints];
+    }
+
     captionWidthConstraint = [NSLayoutConstraint constraintWithItem:_captionLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:_captionLabelScrollView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:-CAPTION_PADDING*2];
     [_captionLabelScrollView addConstraint:captionWidthConstraint];
-    
-    
+
+
     NSArray *scrollViewConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_captionLabelScrollView]|" options:0 metrics:nil views:views];
     [self addConstraints:scrollViewConstraints];
-    
+
     scrollViewConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_captionLabelScrollView]|" options:0 metrics:nil views:views];
     [self addConstraints:scrollViewConstraints];
 }
 
 -(void) setTruncatingTokenForCaption:(const NSString*)token {
-    
+
     if(token == nil) {
         _captionLabel.attributedTruncationToken = nil;
     }
     else {
         NSMutableAttributedString* moreString = [[NSMutableAttributedString alloc] initWithString:(NSString*)ELLIPSES];
-        
+
         [moreString appendAttributedString:[[NSMutableAttributedString alloc] initWithString:NSLocalizedStringWithDefaultValue(@"ContentInfusionMore", nil, [NSBundle mainBundle], (NSString*)token, nil)]];
-        
+
         [moreString addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, moreString.length)];
         [moreString addAttribute:NSUnderlineStyleAttributeName value:@(1) range:NSMakeRange(ELLIPSES.length, moreString.length - ELLIPSES.length)];
 
         [moreString addAttribute:NSFontAttributeName value:[self getCaptionFont] range:NSMakeRange(0, moreString.length)];
         _captionLabel.attributedTruncationToken = moreString;
-        
+
     }
 }
 
 -(UIFont*) getCaptionFont {
-    
+
     UIFont* captionFont = nil;
 
     if ([[self getPhoto] respondsToSelector:@selector(captionFont)])
         captionFont =  [self getPhoto].captionFont;
-    
+
     if(captionFont == nil)
     captionFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-    
+
     return captionFont;
 }
 
 -(UIFont*) getTitleFont {
-    
+
     UIFont* titleFont = nil;
-    
+
     if ([[self getPhoto] respondsToSelector:@selector(titleFont)])
         titleFont =  [self getPhoto].titleFont;
-    
+
     if(titleFont == nil)
         titleFont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-    
+
     return titleFont;
 }
 
+-(UIFont*) getAdditionalTextFont
+{
+    UIFont* additionalTextfont = nil;
+    if ([[self getPhoto] respondsToSelector:@selector(additionalTextFont)]) {
+        additionalTextfont =  [self getPhoto].additionalTextFont;
+    }
+    if(additionalTextfont == nil) {
+        additionalTextfont = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+    }
+    return additionalTextfont;
+}
+
 -(NSAttributedString*) getTitleAttributedStringWithText:(NSString*)text {
-    
+
     NSString* titleString = text ? text : @"";
-    
+
     if (!text && [[self getPhoto] respondsToSelector:@selector(title)])
         titleString = [[self getPhoto].title stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-    
+
     return [[NSMutableAttributedString alloc] initWithString:titleString?titleString:@"" attributes:@{NSFontAttributeName: [self getTitleFont],NSForegroundColorAttributeName :[UIColor whiteColor]}];
 }
 
 -(NSAttributedString*) getCaptionAttributedStringWithText:(NSString*)text {
-    
+
     NSString* captionString = text ? text : @"";
-    
+
     if (!text && [[self getPhoto] respondsToSelector:@selector(caption)])
         captionString = [[self getPhoto].caption stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-    
+
     return [[NSMutableAttributedString alloc] initWithString:captionString?captionString:@""  attributes:@{NSFontAttributeName: [self getCaptionFont],NSForegroundColorAttributeName :[UIColor whiteColor]}];
+}
+
+-(NSAttributedString*) getAdditionalTextAttributedStringWithText:(NSString*)text
+{
+    NSString* additionalTextString = text ? text : @"";
+    if (!text && [[self getPhoto] respondsToSelector:@selector(additionalText)]) {
+        additionalTextString = [[self getPhoto].additionalText stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    }
+    return [[NSMutableAttributedString alloc] initWithString:additionalTextString?additionalTextString:@"" attributes:@{NSFontAttributeName: [self getAdditionalTextFont],NSForegroundColorAttributeName :[UIColor colorWithRed:102.0f/255.0f green:100.0f/255.0f blue:89.0f/255.0f alpha:1.0f]}];
 }
 
 -(NSString*) getStringWithRepeatingString:(NSString*)str repeatCount:(NSUInteger)repeatCount{
@@ -273,28 +319,28 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
 }
 
 - (void)didRecognizeTapGesture:(UITapGestureRecognizer*)gesture {
-    
+
     [self setCaptionStateExpanded:!_isCaptionExpanded];
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
-    
+
     if ([_captionLabel.text length] == 0)
         return CGSizeZero;
-    
+
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
     CGFloat screenHeight = screenBound.size.height;
-    
+
     if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft ||
         [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
         screenWidth = screenBound.size.height;
         screenHeight = screenBound.size.width;
     }
-    
+
     CGFloat maxHeight = FLT_MAX;
     CGFloat width = size.width - CAPTION_PADDING*2;
-    
+
     CGRect titleRect = CGRectZero;
     CGSize titleSize = CGSizeZero;
     if([_titleLabel.text length] > 0)
@@ -311,7 +357,7 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
 
     CGRect captionRect = CGRectZero;
     CGSize captionSize = CGSizeZero;
-    
+
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
         captionRect = [_captionLabel.attributedText boundingRectWithSize:(CGSize){width, maxHeight}
                                                                         options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
@@ -320,15 +366,29 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
         captionSize = [_captionLabel sizeThatFits:CGSizeMake(width, maxHeight)];
         captionRect.size = captionSize;
     }
-    
+
+    CGRect additionalTextRect = CGRectZero;
+    CGSize additionalTextSize = CGSizeZero;
+
+    if ([_additionalTextLabel.text length] > 0) {
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+            additionalTextRect = [[self getAdditionalTextAttributedStringWithText:[self getStringWithRepeatingString:@" " repeatCount:1]] boundingRectWithSize:(CGSize){width, maxHeight}
+                                                                                                                                     options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
+                                                                                                                                     context:nil];
+        } else {
+            additionalTextSize = [_additionalTextLabel sizeThatFits:CGSizeMake(width, maxHeight)];
+            additionalTextRect.size = additionalTextSize;
+        }
+    }
+
     CGSize newsize = CGSizeZero;
     if(!_isCaptionExpanded) {
-        
+
         CGRect titleRectUnexpanded = CGRectZero;
         CGSize titleSizeUnexpanded = CGSizeZero;
 
         if([_titleLabel.text length] > 0) {
-            
+
             if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
                 titleRectUnexpanded = [[self getTitleAttributedStringWithText:[self getStringWithRepeatingString:@" " repeatCount:1]] boundingRectWithSize:(CGSize){width, maxHeight} options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
             else {
@@ -336,28 +396,41 @@ static const NSUInteger NO_LINES_FOR_UNEXPANDED_CAPTION = 4;
                 titleRectUnexpanded.size = titleSizeUnexpanded;
             }
         }
-        
+
         CGRect captionRectUnexpanded = CGRectZero;
         CGSize captionSizeUnexpanded = CGSizeZero;
-        
+
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
             captionRectUnexpanded = [[self getCaptionAttributedStringWithText:[self getStringWithRepeatingString:@"\n" repeatCount:[self getNumberofCaptionLines]-1]] boundingRectWithSize:(CGSize){width, maxHeight} options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
         else {
             captionSizeUnexpanded = [_captionLabel sizeThatFits:CGSizeMake(width, maxHeight)];
             captionRectUnexpanded.size = captionSizeUnexpanded;
         }
-        
-        if(titleRectUnexpanded.size.height + captionRectUnexpanded.size.height < titleRect.size.height + captionRect.size.height) {
-            
-            newsize =  CGSizeMake(size.width, ceil(titleRectUnexpanded.size.height) + ceil(captionRectUnexpanded.size.height) + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0));
+
+        CGRect additionalTextRectUnexpanded = CGRectZero;
+        CGSize additionalTextSizeUnexpanded = CGSizeZero;
+
+        if([_additionalTextLabel.text length] > 0) {
+
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
+                additionalTextRectUnexpanded = [[self getAdditionalTextAttributedStringWithText:[self getStringWithRepeatingString:@" " repeatCount:1]] boundingRectWithSize:(CGSize){width, maxHeight} options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
+            else {
+                additionalTextSizeUnexpanded = [_additionalTextLabel sizeThatFits:CGSizeMake(width, maxHeight)];
+                additionalTextRectUnexpanded.size = additionalTextSizeUnexpanded;
+            }
+        }
+
+        if(titleRectUnexpanded.size.height + captionRectUnexpanded.size.height + additionalTextRectUnexpanded.size.height < titleRect.size.height + captionRect.size.height + additionalTextRect.size.height) {
+
+            newsize =  CGSizeMake(size.width, ceil(titleRectUnexpanded.size.height) + ceil(captionRectUnexpanded.size.height) + ceil(additionalTextRectUnexpanded.size.height) + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0) + ([_additionalTextLabel.text length]>0?INTER_CAPTION_PADDING:0));
             _captionLabelScrollView.contentSize = newsize;
-            
+
             return newsize;
         }
 
     }
 
-    newsize = CGSizeMake(size.width, MIN(ceil(titleRect.size.height) + ceil(captionRect.size.height) + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0), screenHeight));
+    newsize = CGSizeMake(size.width, MIN(ceil(titleRect.size.height) + ceil(captionRect.size.height) + ceil(additionalTextRect.size.height) + CAPTION_PADDING + CAPTION_PADDING + ([_titleLabel.text length]>0?INTER_CAPTION_PADDING:0) + ([_additionalTextLabel.text length]>0?INTER_CAPTION_PADDING:0), screenHeight));
     
     _captionLabelScrollView.contentSize = CGSizeMake(newsize.width, _captionLabel.frame.origin.y+_captionLabel.frame.size.height + (newsize.height >= screenHeight ? CAPTION_PADDING: 0));
     
