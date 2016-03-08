@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
 s.framework     =  'MessageUI', 'QuartzCore', 'SystemConfiguration', 'MobileCoreServices', 'Security'
-s.dependency       'AFNetworking'
+s.dependency       'AFNetworking', '2.6.0'
 s.dependency       'DACircularProgress'
 s.dependency       'pop'
 #s.dependency       'TTTAttributedLabel'
