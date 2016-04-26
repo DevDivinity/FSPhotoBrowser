@@ -135,28 +135,23 @@ caption = _caption;
             // Load async from file
             [self performSelectorInBackground:@selector(loadImageFromFileAsync) withObject:nil];
         } else if (_photoURL) {
-            // Load async from web (using AFNetworking)
-            NSURLRequest *request = [[NSURLRequest alloc] initWithURL:_photoURL
-                                                          cachePolicy:NSURLRequestReturnCacheDataElseLoad
-                                                      timeoutInterval:0];
-            
-            AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-            op.responseSerializer = [AFImageResponseSerializer serializer];
-
-            [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-                UIImage *image = responseObject;
-                self.underlyingImage = image;
-                [self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) { }];
-            
-            [op setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-                CGFloat progress = ((CGFloat)totalBytesRead)/((CGFloat)totalBytesExpectedToRead);
+            NSURLRequest *request = [NSURLRequest requestWithURL:_photoURL];
+            AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+            AFHTTPResponseSerializer *serializer = [AFHTTPResponseSerializer serializer];
+            [manager setResponseSerializer:serializer];
+            NSURLSessionDataTask *task = [manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:^(NSProgress *downloadProgress) {
                 if (self.progressUpdateBlock) {
+                    CGFloat progress = (CGFloat) downloadProgress.completedUnitCount / (CGFloat) downloadProgress.totalUnitCount;
                     self.progressUpdateBlock(progress);
                 }
+            } completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+                if (!error) {
+                    UIImage *image = [UIImage imageWithData:responseObject];
+                    self.underlyingImage = image;
+                }
+                [self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
             }];
-            
-            [[NSOperationQueue mainQueue] addOperation:op];
+            [task resume];
         } else {
             // Failed - no source
             self.underlyingImage = nil;
