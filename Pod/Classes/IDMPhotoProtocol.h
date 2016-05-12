@@ -71,4 +71,6 @@
 // Return nil if there is no placeholder
 - (UIImage *)placeholderImage;
 
+// Return truncating token to use when the given information is too long
+- (NSString *)truncatingToken;
 @end
