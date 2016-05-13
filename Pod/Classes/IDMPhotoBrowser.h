@@ -41,6 +41,8 @@
 
 // View customization
 @property (nonatomic) BOOL displayDoneButton;
+// Done Button text (default Close)
+@property (nonatomic, strong) NSString *doneButtonText;
 @property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, weak) UIImage *doneButtonImage;
 @property (nonatomic, weak) UIColor *trackTintColor, *progressTintColor;

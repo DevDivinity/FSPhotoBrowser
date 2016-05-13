@@ -164,6 +164,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         _displayDoneButton = YES;
         _doneButtonImage = nil;
+        _doneButtonText = @"Close";
         
         _displayToolbar = YES;
         _displayActionButton = YES;
@@ -655,8 +656,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     
     //    NSString* doneButtonText = IDMPhotoBrowserLocalizedStrings(@"Schließen"); //AD
-    NSString* doneButtonText = NSLocalizedStringWithDefaultValue(@"CommonClose", nil, [NSBundle mainBundle], @"Dismiss", nil);
-    [_doneButton setTitle:doneButtonText forState:UIControlStateNormal];
+    [_doneButton setTitle:_doneButtonText forState:UIControlStateNormal];
     
     [_doneButton setFrame:[self frameForDoneButtonAtOrientation:currentOrientation]];
     [_doneButton setAlpha:1.0f];
